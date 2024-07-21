@@ -1,4 +1,5 @@
-import { useEffect, FormEvent, useState, useMemo } from 'react';
+import { useEffect, FormEvent, useState, useMemo, useCallback } from 'react';
+
 import * as styles from './App.module.css';
 
 type SessionType = 'meeting' | 'event';
@@ -28,12 +29,16 @@ export function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<SessionType | ''>('');
 
-  const search = (session: SessionData) => {
-    return (
-      session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.body.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
+  const search = useCallback(
+    (session: SessionData) => {
+      return (
+        session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.body.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    },
+    [searchTerm],
+  );
+
   const [filterFromDate, setFilterFromDate] = useState('');
   const [filterToDate, setFilterToDate] = useState('');
 
@@ -56,12 +61,8 @@ export function App() {
           search(session)
         );
       }),
-    [sessions, searchTerm, typeFilter, filterFromDate, filterToDate]
+    [sessions, typeFilter, filterFromDate, filterToDate, search],
   );
-
-  const generateRandomDate = (from: Date, to: Date) => {
-    return dateToUnix(new Date(from.getTime() + Math.random() * (to.getTime() - from.getTime())).toDateString());
-  };
 
   const fetchSessions = async () => {
     const response = await fetch('http://localhost:3000/sessions');
