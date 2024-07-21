@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 
 import { SessionData, SessionType } from '~entities/session';
 import CreateSessionPage from '~pages/create-session';
+import SessionPage from '~pages/session';
 import UpdateSessionPage from '~pages/update-session';
 
 import * as styles from './App.module.css';
@@ -60,6 +61,16 @@ export function App() {
     setEditingSession(null);
   };
 
+  const handleSessionDeleted = (session: SessionData) => {
+    setSessions(sessions.filter(({ id }) => session.id !== id));
+    setSelectedSession(null);
+  };
+
+  const handleSessionEdit = (session: SessionData) => {
+    setEditingSession(session);
+    setSelectedSession(null);
+  };
+
   const fetchSessions = async () => {
     const response = await fetch('http://localhost:3000/sessions');
     const sessionData = await response.json();
@@ -71,35 +82,13 @@ export function App() {
     setSelectedSession(session);
   };
 
-  const handleSessionBack = () => {
-    setSelectedSession(null);
-  };
-
   const handleSessionCreate = () => {
     setCreatingNewSession(true);
-  };
-
-  const handleSessionEdit = (session: SessionData) => {
-    setEditingSession(session);
   };
 
   useEffect(() => {
     fetchSessions();
   }, []);
-
-  const handleDeleteSession = async (id: number) => {
-    await fetch(`http://localhost:3000/sessions/${id}`, {
-      method: 'DELETE',
-    });
-
-    setSessions(sessions.filter((session) => session.id !== id));
-    handleSessionBack();
-  };
-
-  const unixToDateHuman = (unix: string) => {
-    const date = new Date(Number(unix) * 1000);
-    return `${date.toDateString()} ${date.toLocaleTimeString()}`;
-  };
 
   return (
     <div className={styles.container}>
@@ -157,17 +146,12 @@ export function App() {
           />
         </>
       ) : selectedSession ? (
-        <article>
-          <h2>{selectedSession.title}</h2>
-          <p>{selectedSession.body}</p>
-          <p>{selectedSession.type}</p>
-          <p>
-            {unixToDateHuman(selectedSession.startDateTime)} - {unixToDateHuman(selectedSession.endDateTime)}
-          </p>
-          <button onClick={() => handleDeleteSession(selectedSession.id)}>Delete</button>
-          <button onClick={() => handleSessionEdit(selectedSession)}>Edit</button>
-          <button onClick={handleSessionBack}>Back to List</button>
-        </article>
+        <SessionPage
+          session={selectedSession}
+          onEdit={handleSessionEdit}
+          onDelete={handleSessionDeleted}
+          onCancel={() => setSelectedSession(null)}
+        />
       ) : sessions.length > 0 ? (
         <section>
           <h1>Sessions ({filteredSessions.length})</h1>
