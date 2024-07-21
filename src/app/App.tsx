@@ -1,20 +1,16 @@
-import { useEffect, FormEvent, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 
 import { SessionData, SessionType } from '~entities/session';
 import CreateSessionPage from '~pages/create-session';
+import UpdateSessionPage from '~pages/update-session';
 
 import * as styles from './App.module.css';
 
 export function App() {
   const [sessions, setSessions] = useState<SessionData[]>([]);
-  const [selectedSession, setSelectedSession] = useState<SessionData | undefined>(undefined);
+  const [selectedSession, setSelectedSession] = useState<SessionData | null>(null);
   const [creatingNewSession, setCreatingNewSession] = useState(false);
-  const [editingSession, setEditingSession] = useState<SessionData | undefined>(undefined);
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const [startDateTime, setStartDateTime] = useState('');
-  const [endDateTime, setEndDateTime] = useState('');
-  const [sessionType, setSessionType] = useState<SessionType>('meeting');
+  const [editingSession, setEditingSession] = useState<SessionData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<SessionType | ''>('');
 
@@ -58,6 +54,12 @@ export function App() {
     setCreatingNewSession(false);
   };
 
+  const handleSessionUpdated = (session: SessionData) => {
+    setSessions(sessions.map((p) => (p.id === session.id ? session : p)));
+    handleSessionSelect(session);
+    setEditingSession(null);
+  };
+
   const fetchSessions = async () => {
     const response = await fetch('http://localhost:3000/sessions');
     const sessionData = await response.json();
@@ -70,44 +72,20 @@ export function App() {
   };
 
   const handleSessionBack = () => {
-    setSelectedSession(undefined);
+    setSelectedSession(null);
   };
 
   const handleSessionCreate = () => {
     setCreatingNewSession(true);
-    setTitle('');
-    setBody('');
-    setSessionType('meeting');
   };
 
   const handleSessionEdit = (session: SessionData) => {
     setEditingSession(session);
-    setTitle(session.title);
-    setBody(session.body);
-    setSessionType(session.type);
-    setStartDateTime(session.startDateTime);
-    setEndDateTime(session.endDateTime);
   };
 
   useEffect(() => {
     fetchSessions();
   }, []);
-
-  const validateSessionDuration = (): void => {
-    // Meeting can last up to 1 day
-    // Event can be set up for more days
-    const endDateInput = document.getElementById('end-date') as HTMLObjectElement;
-    const startTime = Number(startDateTime);
-    const endTime = Number(endDateTime);
-    const duration = endTime - startTime;
-    const oneDayInSec = 24 * 60 * 60;
-
-    if (sessionType === 'meeting' && duration > oneDayInSec) {
-      endDateInput.setCustomValidity('Meeting cannot be longer than 24 hours.');
-    } else {
-      endDateInput.setCustomValidity('');
-    }
-  };
 
   const handleDeleteSession = async (id: number) => {
     await fetch(`http://localhost:3000/sessions/${id}`, {
@@ -118,42 +96,9 @@ export function App() {
     handleSessionBack();
   };
 
-  const handleSaveEditedPost = async (event: FormEvent<HTMLFormElement>, id: number, body: Partial<SessionData>) => {
-    event.preventDefault();
-    const response = await fetch(`http://localhost:3000/sessions/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
-
-    const session = await response.json();
-    const updated = { ...selectedSession, ...session };
-
-    setSessions(sessions.map((p) => (p.id === id ? updated : p)));
-    handleSessionSelect(updated);
-    setEditingSession(undefined);
-  };
-
-  const dateToUnix = (date: string) => {
-    return (new Date(date).getTime() / 1000).toString();
-  };
-
   const unixToDateHuman = (unix: string) => {
     const date = new Date(Number(unix) * 1000);
     return `${date.toDateString()} ${date.toLocaleTimeString()}`;
-  };
-
-  const unixToStringDate = (unix: string) => {
-    const date = new Date(Number(unix) * 1000);
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
-
-    return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
   };
 
   return (
@@ -204,91 +149,13 @@ export function App() {
           <CreateSessionPage onCreate={handleSessionCreated} onCancel={() => setCreatingNewSession(false)} />
         </>
       ) : editingSession ? (
-        <form
-          onSubmit={(event) =>
-            handleSaveEditedPost(event, editingSession.id, {
-              title,
-              body,
-              startDateTime,
-              endDateTime,
-              type: sessionType,
-            })
-          }
-        >
-          <dl>
-            <dt>
-              <label htmlFor="title">Title:</label>
-            </dt>
-            <dd>
-              <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            </dd>
-
-            <dt>
-              <label htmlFor="body">Body:</label>
-            </dt>
-            <dd>
-              <textarea id="body" value={body} onChange={(e) => setBody(e.target.value)} required />
-            </dd>
-
-            <dt>
-              <label htmlFor="start-date">Start Date:</label>
-            </dt>
-            <dd>
-              <input
-                id="start-date"
-                type="datetime-local"
-                value={unixToStringDate(startDateTime)}
-                onChange={(e) => setStartDateTime(dateToUnix(e.target.value))}
-              />
-            </dd>
-
-            <dt>
-              <label htmlFor="end-date">End Date:</label>
-            </dt>
-            <dd>
-              <input
-                id="end-date"
-                type="datetime-local"
-                value={unixToStringDate(endDateTime)}
-                onChange={(e) => setEndDateTime(dateToUnix(e.target.value))}
-              />
-            </dd>
-
-            <div>
-              <fieldset>
-                <legend>Session type</legend>
-                <div>
-                  <input
-                    type="radio"
-                    name="meeting"
-                    id="meeting"
-                    value="meeting"
-                    checked={sessionType === 'meeting'}
-                    onChange={() => setSessionType('meeting')}
-                  />
-                  <label htmlFor="meeting">Meeting</label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    value="event"
-                    name="event"
-                    id="event"
-                    checked={sessionType === 'event'}
-                    onChange={() => setSessionType('event')}
-                  />
-                  <label htmlFor="event">Event</label>
-                </div>
-              </fieldset>
-            </div>
-          </dl>
-          <button type="submit" onClick={() => validateSessionDuration()}>
-            Save Changes
-          </button>
-          <button type="button" onClick={() => setEditingSession(undefined)}>
-            Cancel
-          </button>
-        </form>
+        <>
+          <UpdateSessionPage
+            session={editingSession}
+            onUpdate={handleSessionUpdated}
+            onCancel={() => setEditingSession(null)}
+          />
+        </>
       ) : selectedSession ? (
         <article>
           <h2>{selectedSession.title}</h2>
