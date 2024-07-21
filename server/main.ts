@@ -1,6 +1,6 @@
-import * as express from "express";
-import * as cors from 'cors';
-import * as fs from "node:fs";
+import express from 'express';
+import cors from 'cors';
+import fs from 'node:fs';
 
 const app = express();
 const port = 3000;
@@ -9,12 +9,12 @@ app.use(cors());
 app.use(express.json());
 
 interface Session {
-  id: number,
-  title: string,
-  body: string,
-  type: string,
-  startDateTime: number,
-  endDateTime: number,
+  id: number;
+  title: string;
+  body: string;
+  type: string;
+  startDateTime: number;
+  endDateTime: number;
 }
 
 const sessionsStorage: Session[] = JSON.parse(fs.readFileSync('./server/data/sessions.json', 'utf8'));
@@ -45,7 +45,7 @@ app.post('/sessions', (req, res) => {
     type: req.body.type,
     startDateTime: Number(req.body.startDateTime),
     endDateTime: Number(req.body.endDateTime),
-  }
+  };
 
   sessionsStorage.push(newSession);
 
@@ -77,8 +77,8 @@ app.delete('/sessions/:id', (req, res) => {
   console.log('[LOG]:api: DELETE session', req.params.id);
 
   res.send();
-})
+});
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
-})
+});
