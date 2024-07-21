@@ -1,0 +1,113 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 20px;
+  background-color: #198038;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0a3316;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+}
+
+input[type='text'],
+input[type='datetime-local'],
+textarea,
+select {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+textarea {
+  width: 300px;
+  height: 100px;
+}
+
+input[type='radio'] {
+  margin-right: 5px;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+legend {
+  padding: 0 10px;
+  color: #666;
+}
+
+article {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 10px;
+  background-color: #faf7f0;
+}
+
+section {
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  form,
+  section {
+    width: 90%;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+}
+
+dl {
+  width: 100%;
+}
+
+dt {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: 20px;
+}

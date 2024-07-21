@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "target": "es2015",
+    "outDir": "./dist/",
+    "strict": true,
+    "sourceMap": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

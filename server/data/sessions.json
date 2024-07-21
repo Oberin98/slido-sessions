@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "title": "First ever event",
+    "body": "This is THE event. You don't want to miss it, believe me.",
+    "type": "event",
+    "startDateTime": 1704067200,
+    "endDateTime": 1704585600
+  },
+  {
+    "id": 2,
+    "title": "Company offsite",
+    "body": "Please don't forget to take umbrellas.",
+    "type": "event",
+    "startDateTime": 1720425600,
+    "endDateTime": 1720800000
+  },
+  {
+    "id": 3,
+    "title": "Slido All-Hands",
+    "body": "Come to discuss next month's priorities.",
+    "type": "meeting",
+    "startDateTime": 1720105200,
+    "endDateTime": 1720110600
+  },
+  {
+    "id": 4,
+    "title": "Standup",
+    "body": "What's your battle plan for today?",
+    "type": "meeting",
+    "startDateTime": 1719907200,
+    "endDateTime": 1719909000
+  }
+]
