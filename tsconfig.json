@@ -9,6 +9,24 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "~shared/*": [
+        "shared/*"
+      ],
+      "~entities/*": [
+        "entities/*"
+      ],
+      "~features/*": [
+        "features/*"
+      ],
+      "~widgets/*": [
+        "widgets/*"
+      ],
+      "~pages/*": [
+        "pages/*"
+      ]
+    },
   },
   "exclude": [
     "node_modules",

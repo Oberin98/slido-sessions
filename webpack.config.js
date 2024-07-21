@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './client/main.tsx',
+  entry: './src/app',
   devServer: {
     host: '0.0.0.0',
     port: 4200,
@@ -22,6 +22,13 @@ module.exports = {
     ],
   },
   resolve: {
+    alias: {
+      '~shared': path.resolve(__dirname, 'src/shared'),
+      '~entities': path.resolve(__dirname, 'src/entities'),
+      '~features': path.resolve(__dirname, 'src/features'),
+      '~widgets': path.resolve(__dirname, 'src/widgets'),
+      '~pages': path.resolve(__dirname, 'src/pages'),
+    },
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
