@@ -7,8 +7,8 @@
     "test": "jest",
     "e2e": "playwright test",
     "build": "webpack",
-    "lint": "eslint 'client/**/*.{js,jsx,ts,tsx}'",
-    "lint:fix": "eslint 'client/**/*.{js,jsx,ts,tsx}' --fix"
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix"
   },
   "dependencies": {
     "cors": "^2.8.5",
