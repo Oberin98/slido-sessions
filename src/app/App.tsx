@@ -1,20 +1,9 @@
 import { useEffect, FormEvent, useState, useMemo, useCallback } from 'react';
 
+import { SessionData, SessionType } from '~entities/session';
+import CreateSessionPage from '~pages/create-session';
+
 import * as styles from './App.module.css';
-
-type SessionType = 'meeting' | 'event';
-
-type SessionRemoteData = {
-  id: number;
-  body: string;
-  title: string;
-};
-
-type SessionData = SessionRemoteData & {
-  type: SessionType;
-  startDateTime: string;
-  endDateTime: string;
-};
 
 export function App() {
   const [sessions, setSessions] = useState<SessionData[]>([]);
@@ -63,6 +52,11 @@ export function App() {
       }),
     [sessions, typeFilter, filterFromDate, filterToDate, search],
   );
+
+  const handleSessionCreated = (session: SessionData) => {
+    setSessions([session, ...sessions]);
+    setCreatingNewSession(false);
+  };
 
   const fetchSessions = async () => {
     const response = await fetch('http://localhost:3000/sessions');
@@ -115,28 +109,6 @@ export function App() {
     }
   };
 
-  const handleSaveNewSession = async () => {
-    const newSession = {
-      title,
-      body,
-      type: sessionType,
-      startDateTime,
-      endDateTime,
-    };
-
-    const response = await fetch('http://localhost:3000/sessions', {
-      method: 'POST',
-      body: JSON.stringify(newSession),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
-
-    const session = await response.json();
-    setSessions([session, ...sessions]);
-    setCreatingNewSession(false);
-  };
-
   const handleDeleteSession = async (id: number) => {
     await fetch(`http://localhost:3000/sessions/${id}`, {
       method: 'DELETE',
@@ -144,11 +116,6 @@ export function App() {
 
     setSessions(sessions.filter((session) => session.id !== id));
     handleSessionBack();
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSaveNewSession();
   };
 
   const handleSaveEditedPost = async (event: FormEvent<HTMLFormElement>, id: number, body: Partial<SessionData>) => {
@@ -233,80 +200,9 @@ export function App() {
         </>
       )}
       {creatingNewSession ? (
-        <form onSubmit={handleSubmit}>
-          <dl>
-            <dt>
-              <label htmlFor="title">Title:</label>
-            </dt>
-            <dd>
-              <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            </dd>
-
-            <div>
-              <fieldset>
-                <legend>Session type</legend>
-                <div>
-                  <input
-                    type="radio"
-                    name="meeting"
-                    id="meeting"
-                    value="meeting"
-                    checked={sessionType === 'meeting'}
-                    onChange={() => setSessionType('meeting')}
-                  />
-                  <label htmlFor="meeting">Meeting</label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    value="event"
-                    checked={sessionType === 'event'}
-                    onChange={() => setSessionType('event')}
-                  />
-                  <label htmlFor="event">Event</label>
-                </div>
-              </fieldset>
-            </div>
-
-            <dt>
-              <label htmlFor="body">Body:</label>
-            </dt>
-            <dd>
-              <textarea id="body" value={body} onChange={(e) => setBody(e.target.value)} required />
-            </dd>
-
-            <dt>
-              <label htmlFor="start-date">Start Date:</label>
-            </dt>
-            <dd>
-              <input
-                id="start-date"
-                type="datetime-local"
-                required
-                onChange={(e) => setStartDateTime(dateToUnix(e.target.value))}
-              />
-            </dd>
-
-            <dt>
-              <label htmlFor="end-date">End Date:</label>
-            </dt>
-            <dd>
-              <input
-                id="end-date"
-                type="datetime-local"
-                required
-                onChange={(e) => setEndDateTime(dateToUnix(e.target.value))}
-              />
-            </dd>
-          </dl>
-
-          <button type="submit" onClick={() => validateSessionDuration()}>
-            Create Session
-          </button>
-          <button type="button" onClick={() => setCreatingNewSession(false)}>
-            Cancel
-          </button>
-        </form>
+        <>
+          <CreateSessionPage onCreate={handleSessionCreated} onCancel={() => setCreatingNewSession(false)} />
+        </>
       ) : editingSession ? (
         <form
           onSubmit={(event) =>
