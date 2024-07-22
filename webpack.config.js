@@ -5,6 +5,7 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 4200,
+    historyApiFallback: true,
   },
   mode: 'development',
   devtool: 'inline-source-map',
