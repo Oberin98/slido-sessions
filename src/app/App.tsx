@@ -1,105 +1,46 @@
-import { useEffect, useState } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { SessionData } from '~entities/session';
+import { SessionsStore } from '~entities/session';
 import CreateSessionPage from '~pages/create-session';
+import RootPage from '~pages/root';
 import SessionPage from '~pages/session';
 import SessionsPage from '~pages/sessions';
 import UpdateSessionPage from '~pages/update-session';
 
-import * as styles from './App.module.css';
+import './global.css';
 
-export function App() {
-  const [sessions, setSessions] = useState<SessionData[]>([]);
-  const [selectedSession, setSelectedSession] = useState<SessionData | null>(null);
-  const [creatingNewSession, setCreatingNewSession] = useState(false);
-  const [editingSession, setEditingSession] = useState<SessionData | null>(null);
+// TODO - enable lazy load for page elements
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <RootPage />,
+    children: [
+      {
+        index: true,
+        element: <SessionsPage />,
+      },
+      {
+        path: 'session/create',
+        element: <CreateSessionPage />,
+      },
+      {
+        path: 'session/:sessionId',
+        element: <SessionPage />,
+      },
+      {
+        path: 'session/:sessionId/update',
+        element: <UpdateSessionPage />,
+      },
+    ],
+  },
+]);
 
-  const handleSessionCreated = (session: SessionData) => {
-    setSessions([session, ...sessions]);
-    setCreatingNewSession(false);
-  };
-
-  const handleSessionUpdated = (session: SessionData) => {
-    setSessions(sessions.map((p) => (p.id === session.id ? session : p)));
-    handleSessionSelect(session);
-    setEditingSession(null);
-  };
-
-  const handleSessionDeleted = (session: SessionData) => {
-    setSessions(sessions.filter(({ id }) => session.id !== id));
-    setSelectedSession(null);
-  };
-
-  const handleSessionEdit = (session: SessionData) => {
-    setEditingSession(session);
-    setSelectedSession(null);
-  };
-
-  const handleSessionSelect = (session: SessionData) => {
-    setSelectedSession(session);
-  };
-
-  const handleCreateSession = () => {
-    setCreatingNewSession(true);
-  };
-
-  const handleSelectSession = (session: SessionData) => {
-    setSelectedSession(session);
-  };
-
-  const fetchSessions = async () => {
-    const response = await fetch('http://localhost:3000/sessions');
-    const sessionData = await response.json();
-
-    setSessions(sessionData);
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
+function App() {
   return (
-    <div className={styles.container}>
-      <header>
-        <h1>Slido Sessions Example App</h1>
-      </header>
-
-      {!creatingNewSession && !editingSession && !selectedSession && (
-        <>
-          <SessionsPage
-            sessions={sessions}
-            onCreateSession={handleCreateSession}
-            onSelectSession={handleSelectSession}
-          />
-        </>
-      )}
-
-      {creatingNewSession && (
-        <>
-          <CreateSessionPage onCreate={handleSessionCreated} onCancel={() => setCreatingNewSession(false)} />
-        </>
-      )}
-
-      {editingSession && (
-        <>
-          <UpdateSessionPage
-            session={editingSession}
-            onUpdate={handleSessionUpdated}
-            onCancel={() => setEditingSession(null)}
-          />
-        </>
-      )}
-
-      {selectedSession && (
-        <>
-          <SessionPage
-            session={selectedSession}
-            onEdit={handleSessionEdit}
-            onDelete={handleSessionDeleted}
-            onCancel={() => setSelectedSession(null)}
-          />
-        </>
-      )}
-    </div>
+    <SessionsStore>
+      <RouterProvider router={router} />
+    </SessionsStore>
   );
 }
+
+export default App;

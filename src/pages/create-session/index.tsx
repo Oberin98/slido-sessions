@@ -1,43 +1,37 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { SessionType, SessionData } from '~entities/session';
+import { SessionType, useCreateSession } from '~entities/session';
 
-interface CreateSessionPageProps {
-  onCreate: (session: SessionData) => void;
-  onCancel: () => void;
-}
+function CreateSessionPage() {
+  const navigate = useNavigate();
 
-function CreateSessionPage({ onCreate: onCreated, onCancel }: CreateSessionPageProps) {
+  const createSession = useCreateSession();
+
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [sessionType, setSessionType] = useState<SessionType>('meeting');
   const [startDateTime, setStartDateTime] = useState('');
   const [endDateTime, setEndDateTime] = useState('');
 
-  const handleSaveNewSession = async () => {
-    const newSession = {
+  const handleSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+
+    const session = await createSession({
       title,
       body,
       type: sessionType,
       startDateTime,
       endDateTime,
-    };
-
-    const response = await fetch('http://localhost:3000/sessions', {
-      method: 'POST',
-      body: JSON.stringify(newSession),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
     });
 
-    const session = await response.json();
-    onCreated(session);
+    if (session) {
+      navigate(`/session/${session.id}`);
+    }
   };
 
-  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
-    ev.preventDefault();
-    handleSaveNewSession();
+  const handleOnCancelClick = () => {
+    navigate('/');
   };
 
   const validateSessionDuration = (): void => {
@@ -128,7 +122,7 @@ function CreateSessionPage({ onCreate: onCreated, onCancel }: CreateSessionPageP
         Create Session
       </button>
 
-      <button type="button" onClick={onCancel}>
+      <button type="button" onClick={handleOnCancelClick}>
         Cancel
       </button>
     </form>

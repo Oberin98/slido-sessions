@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { SessionData, SessionType } from '~entities/session';
+import { SessionType, useSession, useUpdateSession } from '~entities/session';
 
-interface UpdateSessionPageProps {
-  session: SessionData;
-  onUpdate: (session: SessionData) => void;
-  onCancel: () => void;
-}
+function UpdateSessionPage() {
+  const navigate = useNavigate();
 
-function UpdateSessionPage({ session, onUpdate, onCancel }: UpdateSessionPageProps) {
-  const [title, setTitle] = useState(session.title);
-  const [body, setBody] = useState(session.body);
-  const [startDateTime, setStartDateTime] = useState(session.startDateTime);
-  const [endDateTime, setEndDateTime] = useState(session.endDateTime);
-  const [sessionType, setSessionType] = useState<SessionType>(session.type);
+  const { sessionId } = useParams();
+  const session = useSession(sessionId);
+  const updateSession = useUpdateSession();
+
+  const [title, setTitle] = useState(session?.title || '');
+  const [body, setBody] = useState(session?.body || '');
+  const [startDateTime, setStartDateTime] = useState(session?.startDateTime || '');
+  const [endDateTime, setEndDateTime] = useState(session?.endDateTime || '');
+  const [sessionType, setSessionType] = useState<SessionType>(session?.type || 'event');
 
   const dateToUnix = (date: string) => {
     return (new Date(date).getTime() / 1000).toString();
@@ -30,23 +31,22 @@ function UpdateSessionPage({ session, onUpdate, onCancel }: UpdateSessionPagePro
     return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
   };
 
-  const handleSaveEditedPost = async (
-    event: React.FormEvent<HTMLFormElement>,
-    id: number,
-    body: Partial<SessionData>,
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await fetch(`http://localhost:3000/sessions/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
 
-    const updated: SessionData = await response.json();
+    if (sessionId) {
+      const updatedSession = await updateSession(sessionId, {
+        title,
+        body,
+        startDateTime,
+        endDateTime,
+        type: sessionType,
+      });
 
-    onUpdate(updated);
+      if (updatedSession) {
+        navigate(`/session/${sessionId}`, { replace: true });
+      }
+    }
   };
 
   const validateSessionDuration = (): void => {
@@ -65,18 +65,14 @@ function UpdateSessionPage({ session, onUpdate, onCancel }: UpdateSessionPagePro
     }
   };
 
+  const handleBackClick = () => {
+    if (sessionId) {
+      navigate(`/session/${sessionId}`, { replace: true });
+    }
+  };
+
   return (
-    <form
-      onSubmit={(event) =>
-        handleSaveEditedPost(event, session.id, {
-          title,
-          body,
-          startDateTime,
-          endDateTime,
-          type: sessionType,
-        })
-      }
-    >
+    <form onSubmit={handleSubmit}>
       <dl>
         <dt>
           <label htmlFor="title">Title:</label>
@@ -149,7 +145,7 @@ function UpdateSessionPage({ session, onUpdate, onCancel }: UpdateSessionPagePro
         Save Changes
       </button>
 
-      <button type="button" onClick={onCancel}>
+      <button type="button" onClick={handleBackClick}>
         Cancel
       </button>
     </form>

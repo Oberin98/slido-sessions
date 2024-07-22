@@ -1,23 +1,30 @@
-import { SessionData } from '~entities/session';
+import { useNavigate, useParams } from 'react-router-dom';
 
-interface SessionPageProps {
-  session: SessionData;
-  onEdit: (session: SessionData) => void;
-  onDelete: (session: SessionData) => void;
-  onCancel: () => void;
-}
+import { useDeleteSession, useSession } from '~entities/session';
 
-function SessionPage({ session, onEdit, onDelete, onCancel }: SessionPageProps) {
+function SessionPage() {
+  const navigate = useNavigate();
+
+  const { sessionId } = useParams();
+  const session = useSession(sessionId);
+
+  const deleteSession = useDeleteSession();
+
   const handleSessionEdit = () => {
-    onEdit(session);
+    if (sessionId) {
+      navigate(`/session/${sessionId}/update`);
+    }
   };
 
   const handleDeleteSession = async () => {
-    await fetch(`http://localhost:3000/sessions/${session.id}`, {
-      method: 'DELETE',
-    });
+    if (sessionId) {
+      deleteSession(sessionId);
+      navigate('/', { replace: true });
+    }
+  };
 
-    onDelete(session);
+  const handleBackClick = () => {
+    navigate('/', { replace: true });
   };
 
   const unixToDateHuman = (unix: string) => {
@@ -26,17 +33,23 @@ function SessionPage({ session, onEdit, onDelete, onCancel }: SessionPageProps) 
   };
 
   return (
-    <article>
-      <h2>{session.title}</h2>
-      <p>{session.body}</p>
-      <p>{session.type}</p>
-      <p>
-        {unixToDateHuman(session.startDateTime)} - {unixToDateHuman(session.endDateTime)}
-      </p>
-      <button onClick={handleDeleteSession}>Delete</button>
-      <button onClick={handleSessionEdit}>Edit</button>
-      <button onClick={onCancel}>Back to List</button>
-    </article>
+    <>
+      {session && (
+        <article>
+          <h2>{session.title}</h2>
+          <p>{session.body}</p>
+          <p>{session.type}</p>
+          <p>
+            {unixToDateHuman(session.startDateTime)} - {unixToDateHuman(session.endDateTime)}
+          </p>
+          <button onClick={handleDeleteSession}>Delete</button>
+          <button onClick={handleSessionEdit}>Edit</button>
+          <button onClick={handleBackClick}>Back to List</button>
+        </article>
+      )}
+
+      {!session && <p>Not found</p>}
+    </>
   );
 }
 
