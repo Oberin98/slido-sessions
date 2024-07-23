@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { SessionType, useCreateSession } from '~entities/session';
+import { SessionType, useSessionsStore, getCreateSessionSelector } from '~entities/session';
 
 function CreateSessionPage() {
   const navigate = useNavigate();
 
-  const createSession = useCreateSession();
+  const createSession = useSessionsStore(getCreateSessionSelector());
 
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');

@@ -1,14 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useDeleteSession, useSession } from '~entities/session';
+import { useSessionsStore, getSessionByIdSelector, getDeleteSessionSelector } from '~entities/session';
 
 function SessionPage() {
   const navigate = useNavigate();
 
   const { sessionId } = useParams();
-  const session = useSession(sessionId);
 
-  const deleteSession = useDeleteSession();
+  const session = useSessionsStore(getSessionByIdSelector(sessionId));
+  const deleteSession = useSessionsStore(getDeleteSessionSelector());
 
   const handleSessionEdit = () => {
     if (sessionId) {
