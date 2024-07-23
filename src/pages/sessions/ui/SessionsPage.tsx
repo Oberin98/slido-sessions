@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useSessionsStore, getSessionsSelector } from '~entities/session';
+import { SessionCard, useSessionsStore, getSessionsSelector } from '~entities/session';
 import { SessionsFilter, useFilterSessions, FilterSessionsValue } from '~features/filter-sessions';
 
 function SessionsPage() {
@@ -11,7 +11,7 @@ function SessionsPage() {
     navigate('/session/create');
   };
 
-  const handleOnSelectClick = (id: number) => {
+  const handleOnSelectClick = (id: string) => {
     navigate(`/session/${id}`);
   };
 
@@ -38,10 +38,7 @@ function SessionsPage() {
           <h1>Sessions ({filteredSessions.length})</h1>
 
           {filteredSessions.map((session) => (
-            <article key={session.id}>
-              <h2>{session.title}</h2>
-              <button onClick={() => handleOnSelectClick(session.id)}>View Details</button>
-            </article>
+            <SessionCard key={session.id} id={session.id} title={session.title} onView={handleOnSelectClick} />
           ))}
         </section>
       )}
