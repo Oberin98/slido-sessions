@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { SessionsStore } from '~entities/session';
+import ErrorPage from '~pages/error';
 import RootPage from '~pages/root';
 
 import './global.css';
@@ -9,6 +10,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <RootPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
