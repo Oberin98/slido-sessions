@@ -1,11 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { SessionsStore } from '~entities/session';
-import CreateSessionPage from '~pages/create-session';
 import RootPage from '~pages/root';
-import SessionPage from '~pages/session';
-import SessionsPage from '~pages/sessions';
-import UpdateSessionPage from '~pages/update-session';
 
 import './global.css';
 
@@ -16,20 +12,28 @@ const router = createBrowserRouter([
     element: <RootPage />,
     children: [
       {
-        index: true,
-        element: <SessionsPage />,
+        path: '/',
+        lazy: async () => {
+          return import('~pages/sessions').then(({ route }) => route);
+        },
       },
       {
         path: 'session/create',
-        element: <CreateSessionPage />,
+        lazy: async () => {
+          return import('~pages/create-session').then(({ route }) => route);
+        },
       },
       {
         path: 'session/:sessionId',
-        element: <SessionPage />,
+        lazy: async () => {
+          return import('~pages/session').then(({ route }) => route);
+        },
       },
       {
         path: 'session/:sessionId/update',
-        element: <UpdateSessionPage />,
+        lazy: async () => {
+          return import('~pages/update-session').then(({ route }) => route);
+        },
       },
     ],
   },
