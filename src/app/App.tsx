@@ -1,15 +1,16 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { SessionsStore } from '~entities/session';
+import ErrorPage from '~pages/error';
 import RootPage from '~pages/root';
 
 import './global.css';
 
-// TODO - enable lazy load for page elements
 const router = createBrowserRouter([
   {
     path: '/',
     element: <RootPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
@@ -36,6 +37,12 @@ const router = createBrowserRouter([
         },
       },
     ],
+  },
+  {
+    path: '*',
+    lazy: async () => {
+      return import('~pages/not-found').then(({ route }) => route);
+    },
   },
 ]);
 
