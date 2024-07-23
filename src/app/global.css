@@ -68,18 +68,8 @@ article {
   background-color: #faf7f0;
 }
 
-section {
-  width: 100%;
-  max-width: 800px;
-}
-
 @media (max-width: 768px) {
-  .container {
-    padding: 10px;
-  }
-
-  form,
-  section {
+  form {
     width: 90%;
   }
 }
