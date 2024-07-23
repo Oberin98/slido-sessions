@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { SessionObj, SessionType, useSessions } from '~entities/session';
+import { SessionObj, SessionType, useSessionsStore, getSessionsSelector } from '~entities/session';
 
 function SessionsPage() {
   const navigate = useNavigate();
 
-  const sessions = useSessions();
+  const sessions = useSessionsStore(getSessionsSelector());
 
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<SessionType | ''>('');

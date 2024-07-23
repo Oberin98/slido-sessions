@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { SessionType, useSession, useUpdateSession } from '~entities/session';
+import { SessionType, useSessionsStore, getSessionByIdSelector, getUpdateSessionSelector } from '~entities/session';
 
 function UpdateSessionPage() {
   const navigate = useNavigate();
 
   const { sessionId } = useParams();
-  const session = useSession(sessionId);
-  const updateSession = useUpdateSession();
+  const session = useSessionsStore(getSessionByIdSelector(sessionId));
+  const updateSession = useSessionsStore(getUpdateSessionSelector());
 
   const [title, setTitle] = useState(session?.title || '');
   const [body, setBody] = useState(session?.body || '');
@@ -35,7 +35,8 @@ function UpdateSessionPage() {
     event.preventDefault();
 
     if (sessionId) {
-      const updatedSession = await updateSession(sessionId, {
+      const updatedSession = await updateSession({
+        id: sessionId,
         title,
         body,
         startDateTime,

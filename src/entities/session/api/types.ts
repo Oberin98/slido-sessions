@@ -10,4 +10,4 @@ export type SessionObj = {
 };
 
 export type CreateSessionInput = Omit<SessionObj, 'id'>;
-export type UpdateSessionInput = Partial<Omit<SessionObj, 'id'>>;
+export type UpdateSessionInput = { id: string | number } & Partial<Omit<SessionObj, 'id'>>;

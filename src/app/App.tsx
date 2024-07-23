@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { SessionsStore } from '~entities/session';
 import ErrorPage from '~pages/error';
 import RootPage from '~pages/root';
 
@@ -47,11 +46,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <SessionsStore>
-      <RouterProvider router={router} />
-    </SessionsStore>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
