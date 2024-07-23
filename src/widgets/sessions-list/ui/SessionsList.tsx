@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import { useNavigate } from 'react-router-dom';
 
-import { SessionCard, SessionObj } from '~entities/session';
+import { PreviewSessionCard, SessionObj } from '~entities/session';
 
 import * as styles from './SessionsList.module.css';
 
@@ -29,7 +29,7 @@ function SessionsList({ sessions, loading, className }: SessionsListProps) {
           <h2>Sessions ({sessions.length})</h2>
 
           {sessions.map((session) => (
-            <SessionCard key={session.id} id={session.id} title={session.title} onView={handleOnSelectClick} />
+            <PreviewSessionCard key={session.id} id={session.id} title={session.title} onView={handleOnSelectClick} />
           ))}
         </section>
       )}

@@ -1,24 +1,36 @@
 import cn from 'classnames';
+import React, { useMemo } from 'react';
+
+import { SessionType } from '~entities/session/api';
+import { unixToDateHuman } from '~shared/lib';
 
 import * as styles from './SessionCard.module.css';
 
 interface SessionCardProps {
-  id: number | string;
   title: string;
-  onView: (id: string) => void;
+  body: string;
+  type: SessionType;
+  startDateTime: string;
+  endDateTime: string;
+  footer?: React.ReactNode;
   className?: string;
 }
 
-function SessionCard({ id, title, onView, className }: SessionCardProps) {
-  const handleViewClick = () => {
-    onView(String(id));
-  };
+// Merge with PreviewSessionCard (???)
+function SessionCard({ title, body, type, startDateTime, endDateTime, footer, className }: SessionCardProps) {
+  const date = useMemo(() => {
+    return [startDateTime, endDateTime].filter(Boolean).map(unixToDateHuman).join(' - ');
+  }, [endDateTime, startDateTime]);
 
   return (
-    <div className={cn(styles.root, className)}>
+    <article className={cn(styles.root, className)}>
       <h2>{title}</h2>
-      <button onClick={handleViewClick}>View Details</button>
-    </div>
+      <p>{body}</p>
+      <p>{type}</p>
+      <p>{date}</p>
+
+      {footer}
+    </article>
   );
 }
 
