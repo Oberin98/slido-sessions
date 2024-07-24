@@ -17,6 +17,11 @@ button:hover {
   background-color: #0a3316;
 }
 
+button:disabled {
+  background-color: #4e524f;
+  cursor: not-allowed;
+}
+
 form {
   display: flex;
   flex-direction: column;
