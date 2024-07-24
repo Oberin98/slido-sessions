@@ -11,12 +11,16 @@
     "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "classnames": "^2.5.1",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.12",
     "express": "^4.19.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.52.1",
     "react-router-dom": "^6.25.1",
+    "yup": "^1.4.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
