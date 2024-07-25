@@ -12,24 +12,13 @@ function UpdateSessionPage() {
 
   const [title, setTitle] = useState(session?.title || '');
   const [body, setBody] = useState(session?.body || '');
-  const [startDateTime, setStartDateTime] = useState(session?.startDateTime || '');
-  const [endDateTime, setEndDateTime] = useState(session?.endDateTime || '');
   const [sessionType, setSessionType] = useState<SessionType>(session?.type || 'event');
-
-  const dateToUnix = (date: string) => {
-    return (new Date(date).getTime() / 1000).toString();
-  };
-
-  const unixToStringDate = (unix: string) => {
-    const date = new Date(Number(unix) * 1000);
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
-
-    return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-  };
+  const [startDateTime, setStartDateTime] = useState(() => {
+    return session?.startDateTime.toString() || '';
+  });
+  const [endDateTime, setEndDateTime] = useState(() => {
+    return session?.endDateTime.toString() || '';
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,8 +28,9 @@ function UpdateSessionPage() {
         id: sessionId,
         title,
         body,
-        startDateTime,
-        endDateTime,
+        // TODO - add form validation to prevent case when startDateTime or endDateTime is absent
+        startDateTime: new Date(startDateTime),
+        endDateTime: new Date(endDateTime),
         type: sessionType,
       });
 
@@ -96,8 +86,8 @@ function UpdateSessionPage() {
           <input
             id="start-date"
             type="datetime-local"
-            value={unixToStringDate(startDateTime)}
-            onChange={(e) => setStartDateTime(dateToUnix(e.target.value))}
+            value={startDateTime}
+            onChange={(e) => setStartDateTime(e.target.value)}
           />
         </dd>
 
@@ -108,8 +98,8 @@ function UpdateSessionPage() {
           <input
             id="end-date"
             type="datetime-local"
-            value={unixToStringDate(endDateTime)}
-            onChange={(e) => setEndDateTime(dateToUnix(e.target.value))}
+            value={endDateTime}
+            onChange={(e) => setEndDateTime(e.target.value)}
           />
         </dd>
 

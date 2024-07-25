@@ -1,6 +1,6 @@
-import { CreateSessionInput } from './types';
+import { CreateSessionBody } from './types';
 
-export async function createSession(data: CreateSessionInput) {
+export async function createSession(data: CreateSessionBody) {
   return fetch('http://localhost:3000/sessions', {
     method: 'POST',
     body: JSON.stringify(data),

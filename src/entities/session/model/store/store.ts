@@ -1,20 +1,14 @@
 import { create } from 'zustand';
 
-import {
-  getSessions,
-  createSession,
-  updateSession,
-  deleteSession,
-  SessionObj,
-  CreateSessionInput,
-  UpdateSessionInput,
-} from '../../api';
+import { SessionDTO, CreateSessionInputDTO, UpdateSessionInputDTO } from './types';
+import { formatCreateInputForAPI, formatSessionForStore, formatUpdateInputForAPI } from './utils';
+import { getSessions, createSession, updateSession, deleteSession, SessionObj } from '../../api';
 
 export interface SessionsStore {
-  sessions: SessionObj[];
-  fetchSessions: () => Promise<SessionObj[] | null>;
-  createSession: (input: CreateSessionInput) => Promise<SessionObj | null>;
-  updateSession: (input: UpdateSessionInput) => Promise<SessionObj | null>;
+  sessions: SessionDTO[];
+  fetchSessions: () => Promise<SessionDTO[] | null>;
+  createSession: (input: CreateSessionInputDTO) => Promise<SessionDTO | null>;
+  updateSession: (input: UpdateSessionInputDTO) => Promise<SessionDTO | null>;
   deleteSession: (id: string | number) => Promise<number | null>;
 }
 
@@ -30,9 +24,10 @@ export const useSessionsStore = create<SessionsStore>((setState) => {
     fetchSessions: async () => {
       try {
         const response = await getSessions();
-        const sessions: SessionObj[] = await response.json();
+        const rawSessions: SessionObj[] = await response.json();
 
-        if (Array.isArray(sessions)) {
+        if (Array.isArray(rawSessions)) {
+          const sessions = rawSessions.map(formatSessionForStore);
           setState((state) => ({ ...state, sessions }));
           return sessions;
         }
@@ -50,10 +45,13 @@ export const useSessionsStore = create<SessionsStore>((setState) => {
      */
     createSession: async (input) => {
       try {
-        const response = await createSession(input);
-        const createdSession: SessionObj = await response.json();
+        const requestInput = formatCreateInputForAPI(input);
+        const response = await createSession(requestInput);
+        const rawSession: SessionObj = await response.json();
 
-        if (createdSession) {
+        if (rawSession) {
+          const createdSession = formatSessionForStore(rawSession);
+
           setState((state) => ({
             ...state,
             sessions: [createdSession, ...state.sessions],
@@ -75,10 +73,13 @@ export const useSessionsStore = create<SessionsStore>((setState) => {
      */
     updateSession: async (input) => {
       try {
-        const response = await updateSession(input);
-        const updatedSession: SessionObj = await response.json();
+        const requestInput = formatUpdateInputForAPI(input);
+        const response = await updateSession(requestInput);
+        const rawSession: SessionObj = await response.json();
 
-        if (updatedSession) {
+        if (rawSession) {
+          const updatedSession = formatSessionForStore(rawSession);
+
           setState((state) => ({
             ...state,
             sessions: state.sessions.map((session) => {

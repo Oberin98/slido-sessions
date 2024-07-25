@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import { SessionObj } from '~entities/session';
+import { SessionDTO } from '~entities/session';
 
 import { FilterSessionsValue } from './types';
 
 type UseFilterSessionsOptions = {
-  sessions: SessionObj[];
+  sessions: SessionDTO[];
   filter: FilterSessionsValue;
 };
 
@@ -14,29 +14,29 @@ type UseFilterSessionsOptions = {
  */
 export function useFilterSessions({ sessions, filter }: UseFilterSessionsOptions) {
   return useMemo(() => {
-    const filterCallbacks: ((session: SessionObj) => boolean)[] = [];
+    const filterCallbacks: ((session: SessionDTO) => boolean)[] = [];
 
     // Filter by title
     if (filter?.query) {
       const queryrRegExp = new RegExp(filter.query, 'i');
 
-      filterCallbacks.push((session: SessionObj) => {
+      filterCallbacks.push((session: SessionDTO) => {
         return queryrRegExp.test(session.title);
       });
     }
 
     // Filter by session type
     if (filter?.sessionType) {
-      filterCallbacks.push((session: SessionObj) => {
+      filterCallbacks.push((session: SessionDTO) => {
         return session.type === filter.sessionType;
       });
     }
 
     // Filter by start date
     if (filter?.startDateGte) {
-      filterCallbacks.push((session: SessionObj) => {
+      filterCallbacks.push((session: SessionDTO) => {
         if (session.startDateTime && filter.startDateGte) {
-          return new Date(session.startDateTime).getTime() >= new Date(filter.startDateGte).getTime() / 1000;
+          return new Date(session.startDateTime).getTime() >= new Date(filter.startDateGte).getTime();
         }
 
         return false;
@@ -45,9 +45,9 @@ export function useFilterSessions({ sessions, filter }: UseFilterSessionsOptions
 
     // Filter by end date
     if (filter?.endDateLte) {
-      filterCallbacks.push((session: SessionObj) => {
+      filterCallbacks.push((session: SessionDTO) => {
         if (session.endDateTime && filter.endDateLte) {
-          return new Date(session.startDateTime).getTime() <= new Date(filter.endDateLte).getTime() / 1000;
+          return new Date(session.startDateTime).getTime() <= new Date(filter.endDateLte).getTime();
         }
 
         return false;
