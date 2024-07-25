@@ -1,0 +1,19 @@
+.root {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 20px;
+  background-color: #198038;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.root:hover {
+  background-color: #0a3316;
+}
+
+.root:disabled {
+  background-color: #4e524f;
+  cursor: not-allowed;
+}
