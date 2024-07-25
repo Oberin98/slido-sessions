@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.requiredSign {
+  display: inline-block;
+  padding-left: 4px;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: red;
+}

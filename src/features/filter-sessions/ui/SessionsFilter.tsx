@@ -1,5 +1,11 @@
 import React, { memo } from 'react';
 
+import { SessionType } from '~entities/session';
+import DateTimeInput from '~shared/ui/DateTimeInput';
+import Input from '~shared/ui/Input';
+import Label from '~shared/ui/Label';
+import Select from '~shared/ui/Select';
+
 import { FilterSessionsValue } from '../lib/types';
 
 interface SessionsFilterProps {
@@ -9,12 +15,16 @@ interface SessionsFilterProps {
 }
 
 function SessionsFilter({ value, onChange, className }: SessionsFilterProps) {
-  const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.({ ...value, [ev.currentTarget.name]: ev.currentTarget.value });
+  const handleQueryChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.({ ...value, query: ev.currentTarget.value });
   };
 
-  const handleSelectChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
-    onChange?.({ ...value, [ev.currentTarget.name]: ev.currentTarget.value });
+  const handleTypeChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange?.({ ...value, sessionType: ev.currentTarget.value as SessionType });
+  };
+
+  const handleDateChange = (value: Date, ev: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.({ ...value, [ev.currentTarget.name]: value } as FilterSessionsValue);
   };
 
   return (
@@ -22,46 +32,51 @@ function SessionsFilter({ value, onChange, className }: SessionsFilterProps) {
       <h2>Search sessions</h2>
 
       <div>
-        <input
+        <Label htmlFor="session-title-input">Filter by session title:</Label>
+      </div>
+      <div>
+        <Input
+          id="session-title-input"
           type="text"
           name="query"
           placeholder="Search sessions..."
           value={value?.query}
-          onChange={handleInputChange}
+          onChange={handleQueryChange}
         />
       </div>
 
       <div>
-        <label htmlFor="session-type-select">Filter by session type:</label>
-
-        <select id="session-type-select" name="sessionType" value={value?.sessionType} onChange={handleSelectChange}>
+        <Label htmlFor="session-type-select">Filter by session type:</Label>
+      </div>
+      <div>
+        <Select id="session-type-select" name="sessionType" value={value?.sessionType} onChange={handleTypeChange}>
           <option value="">No filter</option>
           <option value="meeting">Meeting</option>
           <option value="event">Event</option>
-        </select>
+        </Select>
       </div>
 
       <div>
-        <label htmlFor="start-date-gte-input">From:</label>
-
-        <input
+        <Label htmlFor="start-date-gte-input">From:</Label>
+      </div>
+      <div>
+        <DateTimeInput
           id="start-date-gte-input"
           name="startDateGte"
-          type="datetime-local"
           value={value?.startDateGte}
-          onChange={handleInputChange}
+          onChange={handleDateChange}
         />
       </div>
 
       <div>
-        <label htmlFor="end-date-lte-input">To:</label>
-
-        <input
+        <Label htmlFor="end-date-lte-input">To:</Label>
+      </div>
+      <div>
+        <DateTimeInput
           id="end-date-lte-input"
           name="endDateLte"
-          type="datetime-local"
           value={value?.endDateLte}
-          onChange={handleInputChange}
+          onChange={handleDateChange}
         />
       </div>
     </article>

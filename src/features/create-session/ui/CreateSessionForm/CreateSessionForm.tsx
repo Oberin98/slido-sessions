@@ -10,6 +10,7 @@ import {
   SessionForm,
   SessionFormState,
 } from '~entities/session';
+import Button from '~shared/ui/Button';
 
 interface CreateSessionFormProps {
   onCreate?: (session: SessionDTO) => void;
@@ -58,13 +59,13 @@ function CreateSessionForm({ onCreate, onCancel }: CreateSessionFormProps) {
       control={control}
       controls={
         <>
-          <button type="submit" disabled={!formState.isDirty || isCreateLoading}>
-            {isCreateLoading ? 'Loading...' : 'Create Session'}
-          </button>
+          <Button type="submit" loading={isCreateLoading} disabled={!formState.isDirty}>
+            Create Session
+          </Button>
 
-          <button type="button" onClick={onCancel}>
+          <Button type="button" onClick={onCancel}>
             Cancel
-          </button>
+          </Button>
         </>
       }
     />

@@ -10,6 +10,7 @@ import {
   SessionForm,
   SessionFormState,
 } from '~entities/session';
+import Button from '~shared/ui/Button';
 
 interface UpdateSessionFormProps {
   session: SessionDTO;
@@ -60,13 +61,13 @@ function UpdateSessionForm({ session, onUpdate, onCancel }: UpdateSessionFormPro
       control={control}
       controls={
         <>
-          <button type="submit" disabled={isUpdateLoading || !formState.isDirty}>
-            {isUpdateLoading ? 'Loading...' : 'Save Changes'}
-          </button>
+          <Button type="submit" loading={isUpdateLoading} disabled={!formState.isDirty}>
+            Save Changes
+          </Button>
 
-          <button type="button" onClick={onCancel}>
+          <Button type="button" onClick={onCancel}>
             Cancel
-          </button>
+          </Button>
         </>
       }
     />

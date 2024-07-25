@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useSessionsStore, getSessionByIdSelector, getDeleteSessionSelector, SessionCard } from '~entities/session';
+import Button from '~shared/ui/Button';
 
 function SessionPage() {
   const navigate = useNavigate();
@@ -38,9 +39,9 @@ function SessionPage() {
           endDateTime={session.endDateTime}
           footer={
             <div>
-              <button onClick={handleDeleteSession}>Delete</button>
-              <button onClick={handleSessionEdit}>Edit</button>
-              <button onClick={handleBackClick}>Back to List</button>
+              <Button onClick={handleDeleteSession}>Delete</Button>
+              <Button onClick={handleSessionEdit}>Edit</Button>
+              <Button onClick={handleBackClick}>Back to List</Button>
             </div>
           }
         />
