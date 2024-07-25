@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useSessionsStore, getSessionsSelector } from '~entities/session';
 import { SessionsFilter, useFilterSessions, FilterSessionsValue } from '~features/filter-sessions';
+import Button from '~shared/ui/Button';
 import { SessionsList } from '~widgets/sessions-list';
 
 function SessionsPage() {
@@ -15,8 +16,8 @@ function SessionsPage() {
   const [filter, setFilter] = useState<FilterSessionsValue>({
     query: '',
     sessionType: '',
-    startDateGte: '',
-    endDateLte: '',
+    startDateGte: undefined,
+    endDateLte: undefined,
   });
 
   const sessions = useSessionsStore(getSessionsSelector());
@@ -24,7 +25,7 @@ function SessionsPage() {
 
   return (
     <>
-      <button onClick={handleOnCreateClick}>Create New Session</button>
+      <Button onClick={handleOnCreateClick}>Create New Session</Button>
       <SessionsFilter value={filter} onChange={setFilter} />
       <SessionsList sessions={filteredSessions} />
     </>

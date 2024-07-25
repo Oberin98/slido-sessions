@@ -1,5 +1,7 @@
 import cn from 'classnames';
 
+import Button from '~shared/ui/Button';
+
 import * as styles from './PreviewSessionCard.module.css';
 
 interface PreviewSessionCardProps {
@@ -17,7 +19,7 @@ function PreviewSessionCard({ id, title, onView, className }: PreviewSessionCard
   return (
     <div className={cn(styles.root, className)}>
       <h2>{title}</h2>
-      <button onClick={handleViewClick}>View Details</button>
+      <Button onClick={handleViewClick}>View Details</Button>
     </div>
   );
 }

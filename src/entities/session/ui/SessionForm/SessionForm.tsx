@@ -1,7 +1,12 @@
 import { memo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
-import { dateToDateTimeInputValue } from '~shared/lib';
+import DateTimeInput from '~shared/ui/DateTimeInput';
+import Descriptor from '~shared/ui/Descriptor';
+import Input from '~shared/ui/Input';
+import Label from '~shared/ui/Label';
+import Select from '~shared/ui/Select';
+import Textarea from '~shared/ui/Textarea';
 
 import { SessionFormState } from '../../lib';
 
@@ -19,9 +24,11 @@ function SessionForm({ control, controls, ...props }: SessionFormProps) {
         render={({ field, fieldState: { error } }) => {
           return (
             <div>
-              <label htmlFor="title-input">Title:</label>
-              <input id="title-input" type="text" required {...field} />
-              {error?.message && <div>{error.message}</div>}
+              <Label required htmlFor="title-input">
+                Title
+              </Label>
+              <Input id="title-input" type="text" required {...field} />
+              {error?.message && <Descriptor error>{error.message}</Descriptor>}
             </div>
           );
         }}
@@ -33,12 +40,16 @@ function SessionForm({ control, controls, ...props }: SessionFormProps) {
         render={({ field, fieldState: { error } }) => {
           return (
             <div>
-              <label htmlFor="session-type-select">Type:</label>
-              <select id="session-type-select" required {...field}>
+              <Label required htmlFor="session-type-select">
+                Type
+              </Label>
+
+              <Select id="session-type-select" required {...field}>
                 <option value="meeting">Meeting</option>
                 <option value="event">Event</option>
-              </select>
-              {error?.message && <div>{error.message}</div>}
+              </Select>
+
+              {error?.message && <Descriptor error>{error.message}</Descriptor>}
             </div>
           );
         }}
@@ -50,9 +61,13 @@ function SessionForm({ control, controls, ...props }: SessionFormProps) {
         render={({ field, fieldState: { error } }) => {
           return (
             <div>
-              <label htmlFor="body-input">Body:</label>
-              <textarea id="body-input" required {...field} />
-              {error?.message && <div>{error.message}</div>}
+              <Label required htmlFor="body-input">
+                Body
+              </Label>
+
+              <Textarea id="body-input" required {...field} />
+
+              {error?.message && <Descriptor error>{error.message}</Descriptor>}
             </div>
           );
         }}
@@ -61,19 +76,16 @@ function SessionForm({ control, controls, ...props }: SessionFormProps) {
       <Controller
         name="startDateTime"
         control={control}
-        render={({ field: { value, onChange, ...field }, fieldState: { error } }) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <div>
-              <label htmlFor="start-date-input">Start Date:</label>
-              <input
-                id="start-date-input"
-                type="datetime-local"
-                required
-                value={dateToDateTimeInputValue(value)}
-                onChange={(ev) => onChange(new Date(ev.currentTarget.value))}
-                {...field}
-              />
-              {error?.message && <div>{error.message}</div>}
+              <Label required htmlFor="start-date-input">
+                Start Date
+              </Label>
+
+              <DateTimeInput id="start-date-input" required {...field} />
+
+              {error?.message && <Descriptor error>{error.message}</Descriptor>}
             </div>
           );
         }}
@@ -82,19 +94,16 @@ function SessionForm({ control, controls, ...props }: SessionFormProps) {
       <Controller
         name="endDateTime"
         control={control}
-        render={({ field: { value, onChange, ...field }, fieldState: { error } }) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <div>
-              <label htmlFor="end-date-input">End Date:</label>
-              <input
-                id="end-date-input"
-                type="datetime-local"
-                required
-                value={dateToDateTimeInputValue(value)}
-                onChange={(ev) => onChange(new Date(ev.currentTarget.value))}
-                {...field}
-              />
-              {error?.message && <div>{error.message}</div>}
+              <Label required htmlFor="end-date-input">
+                End Date:
+              </Label>
+
+              <DateTimeInput id="end-date-input" required {...field} />
+
+              {error?.message && <Descriptor error>{error.message}</Descriptor>}
             </div>
           );
         }}
