@@ -4,38 +4,40 @@ import { useForm } from 'react-hook-form';
 
 import {
   useSessionsStore,
-  getCreateSessionSelector,
+  getUpdateSessionSelector,
   SessionDTO,
   sessionFormSchema,
   SessionForm,
   SessionFormState,
 } from '~entities/session';
 
-interface CreateSessionFormProps {
-  onCreate?: (session: SessionDTO) => void;
+interface UpdateSessionFormProps {
+  session: SessionDTO;
+  onUpdate?: (session: SessionDTO) => void;
   onCancel?: () => void;
 }
 
-function CreateSessionForm({ onCreate, onCancel }: CreateSessionFormProps) {
-  const createSession = useSessionsStore(getCreateSessionSelector());
+function UpdateSessionForm({ session, onUpdate, onCancel }: UpdateSessionFormProps) {
+  const updateSession = useSessionsStore(getUpdateSessionSelector());
 
-  const [isCreateLoading, setIsCreateLoading] = useState(false);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
 
   const { handleSubmit, control, formState } = useForm<SessionFormState>({
     resolver: yupResolver(sessionFormSchema),
     defaultValues: {
-      title: '',
-      body: '',
-      sessionType: 'event',
-      startDateTime: undefined,
-      endDateTime: undefined,
+      title: session.title,
+      body: session.body,
+      sessionType: session.type,
+      startDateTime: session.startDateTime,
+      endDateTime: session.endDateTime,
     },
   });
 
   const handleOnSubmit = handleSubmit(async (data) => {
-    setIsCreateLoading(true);
+    setIsUpdateLoading(true);
 
-    const session = await createSession({
+    const updatedSession = await updateSession({
+      id: session.id,
       title: data.title,
       body: data.body,
       type: data.sessionType,
@@ -43,13 +45,13 @@ function CreateSessionForm({ onCreate, onCancel }: CreateSessionFormProps) {
       endDateTime: new Date(data.endDateTime),
     });
 
-    if (session) {
-      onCreate?.(session);
+    if (updatedSession) {
+      onUpdate?.(updatedSession);
     }
 
-    // TODO - handle error case when session is not created
+    // TODO - handle error case when session is not updated
 
-    setIsCreateLoading(false);
+    setIsUpdateLoading(false);
   });
 
   return (
@@ -58,8 +60,8 @@ function CreateSessionForm({ onCreate, onCancel }: CreateSessionFormProps) {
       control={control}
       controls={
         <>
-          <button type="submit" disabled={!formState.isDirty || isCreateLoading}>
-            {isCreateLoading ? 'Loading...' : 'Create Session'}
+          <button type="submit" disabled={isUpdateLoading || !formState.isDirty}>
+            {isUpdateLoading ? 'Loading...' : 'Save Changes'}
           </button>
 
           <button type="button" onClick={onCancel}>
@@ -71,4 +73,4 @@ function CreateSessionForm({ onCreate, onCancel }: CreateSessionFormProps) {
   );
 }
 
-export default CreateSessionForm;
+export default UpdateSessionForm;
