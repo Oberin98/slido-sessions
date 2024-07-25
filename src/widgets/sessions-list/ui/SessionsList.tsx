@@ -1,12 +1,12 @@
 import cn from 'classnames';
 import { useNavigate } from 'react-router-dom';
 
-import { PreviewSessionCard, SessionObj } from '~entities/session';
+import { PreviewSessionCard, SessionDTO } from '~entities/session';
 
 import * as styles from './SessionsList.module.css';
 
 interface SessionsListProps {
-  sessions: SessionObj[];
+  sessions: SessionDTO[];
   loading?: boolean;
   className?: string;
 }

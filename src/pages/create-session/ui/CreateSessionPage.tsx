@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { SessionObj } from '~entities/session';
+import { SessionDTO } from '~entities/session';
 import { CreateSessionForm } from '~features/create-session';
 
 function CreateSessionPage() {
   const navigate = useNavigate();
 
-  const handleCreate = (session: SessionObj) => {
+  const handleCreate = (session: SessionDTO) => {
     navigate(`/session/${session.id}`);
   };
 

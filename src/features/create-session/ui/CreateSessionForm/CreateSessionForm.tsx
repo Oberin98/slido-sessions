@@ -2,12 +2,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { useSessionsStore, getCreateSessionSelector, SessionObj } from '~entities/session';
+import { useSessionsStore, getCreateSessionSelector, SessionDTO } from '~entities/session';
 
 import { CreateSessionFormState, schema } from '../../lib';
 
 interface CreateSessionFormProps {
-  onCreate?: (session: SessionObj) => void;
+  onCreate?: (session: SessionDTO) => void;
   onCancel?: () => void;
 }
 
@@ -34,8 +34,8 @@ function CreateSessionForm({ onCreate, onCancel }: CreateSessionFormProps) {
       title: data.title,
       body: data.body,
       type: data.sessionType,
-      startDateTime: data.startDateTime,
-      endDateTime: data.endDateTime,
+      startDateTime: new Date(data.startDateTime),
+      endDateTime: new Date(data.endDateTime),
     });
 
     if (session) {

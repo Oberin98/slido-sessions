@@ -1,6 +1,6 @@
-import { UpdateSessionInput } from './types';
+import { UpdateSessionBody } from './types';
 
-export async function updateSession({ id, ...data }: UpdateSessionInput) {
+export async function updateSession({ id, ...data }: UpdateSessionBody) {
   return fetch(`http://localhost:3000/sessions/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),

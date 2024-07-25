@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { useMemo } from 'react';
 
 import { SessionType } from '~entities/session/api';
-import { unixToDateHuman } from '~shared/lib';
+import { dateToDateHuman } from '~shared/lib';
 
 import * as styles from './SessionCard.module.css';
 
@@ -10,16 +10,16 @@ interface SessionCardProps {
   title: string;
   body: string;
   type: SessionType;
-  startDateTime: string;
-  endDateTime: string;
+  startDateTime: Date;
+  endDateTime: Date;
   footer?: React.ReactNode;
   className?: string;
 }
 
 // Merge with PreviewSessionCard (???)
 function SessionCard({ title, body, type, startDateTime, endDateTime, footer, className }: SessionCardProps) {
-  const date = useMemo(() => {
-    return [startDateTime, endDateTime].filter(Boolean).map(unixToDateHuman).join(' - ');
+  const displayDateRange = useMemo(() => {
+    return [dateToDateHuman(startDateTime), dateToDateHuman(endDateTime)].filter(Boolean).join(' - ');
   }, [endDateTime, startDateTime]);
 
   return (
@@ -27,7 +27,7 @@ function SessionCard({ title, body, type, startDateTime, endDateTime, footer, cl
       <h2>{title}</h2>
       <p>{body}</p>
       <p>{type}</p>
-      <p>{date}</p>
+      <p>{displayDateRange}</p>
 
       {footer}
     </article>
